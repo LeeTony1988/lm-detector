@@ -367,6 +367,7 @@ export const fr: Messages = {
     no_usage: 'La réponse de l’API n’indique pas le nombre de tokens d’entrée : la sonde de tokeniseur ne peut pas fonctionner.',
     proxy_missing: 'Aucune URL de Worker disponible. Saisissez-la dans « Connexion ».',
     upstream_not_api: 'L’amont a renvoyé une page web au lieu d’une réponse d’API. Vérifiez le chemin de l’« URL de base » ; par exemple, celle d’OpenRouter est https://openrouter.ai/api/v1.',
+    invalid_upstream_url: 'Le proxy refuse cette adresse d’API. Elle doit utiliser HTTPS, un nom de domaine complet et l’un des trois points de terminaison (/chat/completions, /responses ou /messages), sans nom d’utilisateur, mot de passe, paramètre de requête ni fragment #. Les API locales et de réseau privé passent par une connexion directe du navigateur.',
     http401: 'Requête refusée ; vérifiez la clé API',
     http403: 'Accès refusé (HTTP 403) ; consultez le détail de l’erreur',
     http404: 'Modèle ou API introuvable ; vérifiez le nom du modèle et le protocole',

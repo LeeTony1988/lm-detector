@@ -46,7 +46,6 @@ The Worker forwards no cookies and stores no keys, and cancelling a request in t
 
 | Limit | If you run into it |
 | --- | --- |
-| HTTPS on port 443 only | Use the command line, which connects to the API directly and also accepts `http://` addresses. |
 | Public domain names only, with no IP addresses, `localhost`, `.local`, or `.internal` names | Use the command line. |
 | No credentials, query string, or fragment in the URL | Enter the key in the API Key field. If the API needs a query string, use the command line. |
 | Request bodies up to 128 KiB | Fingerpoint's own requests stay far below the limit. |

@@ -28,10 +28,10 @@ const PREFLIGHT_MAX_AGE = '7200'
 
 /** @typedef {keyof typeof ENDPOINT_SUFFIXES} Format */
 /** @typedef {{ allowedOrigins?: readonly string[] }} ProxyOptions */
-/** @typedef {Error & { status: number }} ProxyFailure */
+/** @typedef {Error & { status: number, code?: string }} ProxyFailure */
 
-/** @param {number} status @param {string} message @returns {ProxyFailure} */
-const rejection = (status, message) => Object.assign(new Error(message), { status })
+/** @param {number} status @param {string} message @param {string} [code] @returns {ProxyFailure} */
+const rejection = (status, message, code) => Object.assign(new Error(message), { status, ...(code ? { code } : {}) })
 
 /** @param {unknown} error @returns {error is ProxyFailure} */
 const isRejection = error => error instanceof Error && typeof (/** @type {Partial<ProxyFailure>} */ (error)).status === 'number'
@@ -105,14 +105,17 @@ function upstreamUrl(value, format) {
   try {
     if (typeof value !== 'string') throw new Error('not a string')
     url = new URL(value)
-  } catch { throw rejection(400, 'The upstream URL is invalid.') }
-  if (url.protocol !== 'https:' || url.port || url.username || url.password || url.search || url.hash
-    || !url.pathname.endsWith(ENDPOINT_SUFFIXES[format])) {
-    throw rejection(400, 'Use an HTTPS API endpoint on port 443 without credentials, query parameters or fragments.')
+  } catch { throw rejection(400, 'The upstream URL is invalid.', 'invalid_upstream_url') }
+  // Any port is allowed: gateways and self-hosted APIs often listen on one that is not 443, such as :8443.
+  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash) {
+    throw rejection(400, 'Use an HTTPS API endpoint without credentials, query parameters or fragments.', 'invalid_upstream_url')
+  }
+  if (!url.pathname.endsWith(ENDPOINT_SUFFIXES[format])) {
+    throw rejection(400, `The upstream URL must end in ${ENDPOINT_SUFFIXES[format]} for this protocol.`, 'invalid_upstream_url')
   }
   if (!/^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(url.hostname)
     || /(?:^|\.)(?:localhost|local|internal)$/.test(url.hostname)) {
-    throw rejection(400, 'Use a public API hostname.')
+    throw rejection(400, 'Use a public API hostname. Local and private network APIs use a direct browser connection instead.', 'invalid_upstream_url')
   }
   return url
 }
@@ -190,7 +193,7 @@ export async function proxyRequest(request, options = {}) {
     if (retryAfter) responseHeaders.set('Retry-After', retryAfter)
     return new Response(upstream.body, { status: upstream.status, headers: responseHeaders })
   } catch (error) {
-    if (isRejection(error)) return failure(error.status, error.message, origin)
+    if (isRejection(error)) return failure(error.status, error.message, origin, error.code)
     if (request.signal.aborted) return failure(499, 'The request was cancelled.', origin)
     if (signal.aborted) return failure(504, 'The upstream request timed out.', origin)
     return failure(502, 'The proxy could not reach the upstream service.', origin)

@@ -22,6 +22,7 @@ const codeKeys: Record<ErrorCode, Parameters<I18n['t']>[0]> = {
   no_usage: 'errors.no_usage',
   proxy_missing: 'errors.proxy_missing',
   upstream_not_api: 'errors.upstream_not_api',
+  invalid_upstream_url: 'errors.invalid_upstream_url',
 }
 
 /** 把共享层错误映射为用户可读文案（design.md「文案与数字格式」）。原始 message 由调用方放入「查看详情」。 */
@@ -30,6 +31,8 @@ export function describeError(i18n: I18n, error: unknown, fallbackKey: Parameter
 }
 
 export function describe(i18n: I18n, code: ErrorCode | undefined, status: number | undefined, fallbackKey: Parameters<I18n['t']>[0] = 'errors.unknown'): string {
+  // The proxy explains why it rejected the address, which a bare status would hide.
+  if (code === 'invalid_upstream_url') return i18n.t('errors.invalid_upstream_url')
   if (status !== undefined && (code === 'http' || code === 'proxy_unavailable')) {
     if (code === 'proxy_unavailable') return i18n.t('errors.proxy_unavailable')
     if (status === 401) return i18n.t('errors.http401')

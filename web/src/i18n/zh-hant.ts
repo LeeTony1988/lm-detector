@@ -367,6 +367,7 @@ export const zhHant: Messages = {
     no_usage: '介面的回覆中沒有輸入 token 數，因此無法探測分詞器。',
     proxy_missing: '沒有可用的 Worker 網址。請在「連線方式」中填寫 Worker 網址。',
     upstream_not_api: '上游回傳了網頁，而不是 API 回覆。請檢查「介面網址」的路徑，例如 OpenRouter 的介面網址是 https://openrouter.ai/api/v1。',
+    invalid_upstream_url: '代理不接受這個介面網址。介面必須使用 HTTPS、完整網域名稱和三種協定端點之一（/chat/completions、/responses 或 /messages），網址裡不能有使用者名稱、密碼、查詢參數或 # 片段。本地和內網介面由瀏覽器直連，不經過代理。',
     http401: '請求遭拒，請檢查 API Key',
     http403: '服務拒絕存取（HTTP 403），請查看錯誤詳情',
     http404: '找不到該模型或介面，請檢查模型名稱和介面協定',

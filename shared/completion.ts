@@ -62,8 +62,11 @@ export async function readCompletion(response: Response, format: Format, onText?
       try { d = object(await response.json()) } catch { throw coded(`代理不可用（HTTP ${response.status}），请确认站点包含 API 代理函数`, 'proxy_unavailable', { httpStatus: response.status }) }
       metadata(d)
       const error = object(d.error)
-      // The proxy marks an upstream that answered with a web page instead of an API reply.
-      throw coded(`HTTP ${response.status}：${string(error.message) || string(d.message) || '请求失败'}`, error.code === 'upstream_not_api' ? 'upstream_not_api' : 'http', { httpStatus: response.status })
+      // The proxy marks an upstream that answered with a web page instead of an API reply, and its own URL checks,
+      // so the web app can explain the cause instead of showing a bare status.
+      const code = string(error.code)
+      const errorCode: ErrorCode = code === 'upstream_not_api' || code === 'invalid_upstream_url' ? code : 'http'
+      throw coded(`HTTP ${response.status}：${string(error.message) || string(d.message) || '请求失败'}`, errorCode, { httpStatus: response.status })
     }
     if (!response.headers.get('content-type')?.includes('text/event-stream')) {
       let d: Record<string, unknown>

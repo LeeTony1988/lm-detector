@@ -85,8 +85,8 @@
           "url": {
             "type": "string",
             "format": "uri",
-            "description": "The complete upstream endpoint: HTTPS on port 443, a public host name, no credentials, query or fragment, ending in `/chat/completions`, `/responses` or `/messages` for the chosen format.",
-            "examples": ["https://api.example.com/v1/chat/completions"]
+            "description": "The complete upstream endpoint: HTTPS on any port, a public host name, no credentials, query or fragment, ending in `/chat/completions`, `/responses` or `/messages` for the chosen format.",
+            "examples": ["https://api.example.com/v1/chat/completions", "https://gateway.example.com:8443/v1/chat/completions"]
           },
           "format": { "type": "string", "enum": ["openai", "responses", "anthropic"], "description": "Chat Completions, Responses or Messages." },
           "body": {

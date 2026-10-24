@@ -367,6 +367,7 @@ export const ja: Messages = {
     no_usage: 'API の回答に入力 token 数が含まれていないため、トークナイザーを探査できません。',
     proxy_missing: '利用可能な Worker の URL がありません。「接続方式」で Worker の URL を入力してください。',
     upstream_not_api: '上流が API の回答ではなく Web ページを返しました。「ベース URL」のパスを確認してください。たとえば OpenRouter のベース URL は https://openrouter.ai/api/v1 です。',
+    invalid_upstream_url: 'プロキシはこの API アドレスを受け付けません。HTTPS、完全なドメイン名、および三つのプロトコル端点（/chat/completions、/responses、/messages）のいずれかが必要で、ユーザー名、パスワード、クエリパラメータ、# フラグメントは使えません。ローカルとプライベートネットワークの API はプロキシを通らず、ブラウザが直接接続します。',
     http401: 'リクエストが拒否されました。API Key を確認してください',
     http403: 'アクセスが拒否されました（HTTP 403）。エラーの詳細を確認してください',
     http404: 'モデルまたは API が見つかりません。モデル名と API プロトコルを確認してください',
